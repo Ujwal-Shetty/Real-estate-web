@@ -1,65 +1,69 @@
-import {useEffect, useRef, useState} from 'react'
-import {Link} from 'react-router-dom'
-import { useSelector,useDispatch } from 'react-redux'
-import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
-import {app} from '../firebase.js'
-import { updateUserStart,updateUserSuccess,updateUserFailure ,
-     deleteUserStart,deleteUserFailure,deleteUserSuccess,
-     signOutUserStart} from '../redux/user/userSlice.js'
-
-
-
+import { useSelector } from 'react-redux';
+import { useRef, useState, useEffect } from 'react';
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage';
+import { app } from '../firebase';
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  signOutUserStart,
+} from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 export default function Profile() {
-  const {currentUser,loading,error}=useSelector((state)=>state.user)
-  const fileRef=useRef(null)
-  const[file,setFile]=useState(undefined)
-  const [filePerc,setFilePerc]= useState(0)
-  const [fileUploadError,setFileUploadError]= useState(false)
-  const[formData,setFormData]= useState({})
-  const[updateSuccess,setUpdateSuccess]= useState(false)
+  const fileRef = useRef(null);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const [file, setFile] = useState(undefined);
+  const [filePerc, setFilePerc] = useState(0);
+  const [fileUploadError, setFileUploadError] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+ 
   const dispatch = useDispatch();
 
-  console.log(formData)
-   console.log(file)
-   console.log(filePerc)
-   console.log(fileUploadError)
- 
-  useEffect(()=>{
-    if(file){
-      handleFileUpload(file)
+   useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
     }
-  },[file])
+  }, [file]);
 
-  const handleFileUpload=(file)=>{
+  const handleFileUpload = (file) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-   const storage = getStorage(app);
-   const filename = new Date().getTime()+file.name;
-   const storageRef = ref(storage,filename)
-   const uploadTask = uploadBytesResumable(storageRef,file);
-   
-   uploadTask.on(
-    'state_changed',
-    (snapshot) => {
-      const progress =
-        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-       setFilePerc(Math.round(progress))
-   },
-    (error)=>{
-      setFileUploadError(ture)
-    },
-    () =>{
-      getDownloadURL(uploadTask.snapshot.ref).then
-      ((downloadURL)=>{
-        setFormData({...formData,avatar:downloadURL})
-      })
-    }
-   )
-  }
-const handleChange=(e)=>{
-  setFormData({...formData,[e.target.id]:e.target.value})
-}
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setFilePerc(Math.round(progress));
+      },
+      (error) => {
+        setFileUploadError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+          setFormData({ ...formData, avatar: downloadURL })
+        );
+      }
+    );
+  };
 
-const handleSubmit = async (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
@@ -114,7 +118,6 @@ const handleSubmit = async (e) => {
       dispatch(deleteUserFailure(data.message));
     }
   };
-
 
 
  return (
