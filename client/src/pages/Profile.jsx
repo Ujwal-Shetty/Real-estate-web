@@ -123,7 +123,7 @@ export default function Profile() {
 
   
   return (
-    <div className='p-3 max-w-lg mx-auto'>
+    <div className='p-2 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input
@@ -137,7 +137,7 @@ export default function Profile() {
           onClick={() => fileRef.current.click()}
           src={formData.avatar || currentUser.avatar}
           alt='profile'
-          className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'
+          className='rounded-full h-20 w-20 object-cover cursor-pointer self-center mt-2 hover:opacity-90'
         />
         <p className='text-sm self-center'>
           {fileUploadError ? (
@@ -182,6 +182,10 @@ export default function Profile() {
           {loading ? 'Loading...' : 'Update'}
         </button>  
       </form>
+      <p className='text-red-700 mt-5'>{error ? error : ''}</p>
+      <p className='text-green-700 mt-5'>
+        {updateSuccess ? 'User is updated successfully!' : ''}
+      </p>
 
       <div className='flex justify-between mt-5'>
         <span
@@ -195,10 +199,7 @@ export default function Profile() {
         </span>
       </div>
 
-      <p className='text-red-700 mt-5'>{error ? error : ''}</p>
-      <p className='text-green-700 mt-5'>
-        {updateSuccess ? 'User is updated successfully!' : ''}
-      </p>
+      
   
     </div>
   );

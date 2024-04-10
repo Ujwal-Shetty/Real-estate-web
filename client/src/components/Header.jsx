@@ -1,12 +1,9 @@
 import { FaSearch } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import MenuPage from '../pages/MenuPage';
 import { useEffect, useState ,useRef} from 'react';
 import {
- 
   deleteUserFailure,
-  deleteUserStart,
   deleteUserSuccess,
   signOutUserStart,
 } from '../redux/user/userSlice';
@@ -154,11 +151,8 @@ export default function Header() {
               <Link to='/sign-in'>
               <li className=' text-slate-700 hover:underline'> Sign in</li>
               </Link>
-              
             )}
             </div>
-         
-         
         </ul>
       </div>
       

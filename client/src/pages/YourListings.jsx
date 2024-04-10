@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useState, useEffect} from 'react';
-
 import { Link } from 'react-router-dom';
+
 export default function YourListings() {
   
   const { currentUser } = useSelector((state) => state.user);
@@ -51,15 +51,13 @@ export default function YourListings() {
 
   return (
     <div className='p-3 max-w-lg mx-auto' >
-      <p className='text-red-700 mt-5'>
-        {showListingsError ? 'Error showing listings' : ''}
-      </p>
-
-      userListings ? 'No listings yet' :
         <div className='flex flex-col gap-4' >
           <h1 className='text-center mt-7 text-2xl font-semibold'>
             Your Listings
           </h1>
+          <p className='text-red-700 mt-5'>
+           {showListingsError ? 'Error showing listings' : ''}
+          </p>
           {userListings.map((listing) => (
             <div 
               key={listing._id}
